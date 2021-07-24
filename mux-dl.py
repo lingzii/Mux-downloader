@@ -173,4 +173,4 @@ if __name__ == '__main__':
     load_global_variable()
     consum = measureTime(target=main)
     print(f'Total running time: {consum} sec')
-    playsound('./tools/YU.mp3')
+    playsound('./material/YU.mp3')
