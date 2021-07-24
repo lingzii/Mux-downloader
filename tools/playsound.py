@@ -2,14 +2,15 @@ def playsound(sound, block=True):
     from ctypes import c_buffer, windll
     from random import random
     from time import sleep
-    from sys import getfilesystemencoding
+    from os.path import abspath, join
+    import sys
 
     class PlaysoundException(Exception):
         pass
 
     def winCommand(*command):
         buf = c_buffer(255)
-        command = ' '.join(command).encode(getfilesystemencoding())
+        command = ' '.join(command).encode(sys.getfilesystemencoding())
         errorCode = int(windll.winmm.mciSendStringA(command, buf, 254, 0))
         if errorCode:
             errorBuffer = c_buffer(255)
@@ -20,6 +21,14 @@ def playsound(sound, block=True):
             raise PlaysoundException(exceptionMessage)
         return buf.value
 
+    def resource_path(relative_path):
+        try:
+            base_path = sys._MEIPASS
+        except:
+            base_path = abspath(".")
+        return join(base_path, relative_path)
+
+    sound = resource_path(sound)
     alias = 'playsound_' + str(random())
     winCommand('open "' + sound + '" alias', alias)
     winCommand('set', alias, 'time format milliseconds')

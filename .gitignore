@@ -1,3 +1,6 @@
 __pycache__/
+build/
+*.bat
+*.spec
 songList.txt
 metadata.json
