@@ -1,7 +1,8 @@
 from youtube_dl import YoutubeDL
 from tempfile import gettempdir
 from threading import Thread
-from requests import get
+from os import getcwd, chdir
+# from requests import get
 
 
 def youtubeParser(url):
@@ -61,12 +62,30 @@ class youtubeDL:
         return (self.curr, self.size)
 
     def task(self):
-        with get(self.obj['url'], stream=True) as r:
-            self.size = int(r.headers['Content-length'])
-            with open(f'{self.path}.webm', 'wb') as f:
-                for chunk in r.iter_content(4096):
-                    self.curr += len(chunk)
-                    f.write(chunk)
+        # with get(self.obj['url'], stream=True) as r:
+        #     self.size = int(r.headers['Content-length'])
+        #     with open(f'{self.path}.webm', 'wb') as f:
+        #         for chunk in r.iter_content(4096):
+        #             self.curr += len(chunk)
+        #             f.write(chunk)
+
+        self.size = 1
+        tmp = getcwd()
+        chdir(gettempdir())
+        ydl_opts = {
+            "quiet": True,
+            "ignoreerrors": True,
+            'outtmpl': r'%(id)s.%(ext)s',
+            'postprocessors': [
+                {'key': 'FFmpegExtractAudio',
+                 'preferredcodec': 'mp3'},
+                {'key': 'FFmpegMetadata'},
+            ]
+        }
+        with YoutubeDL(ydl_opts) as ydl:
+            ydl.download([self.obj['tags']['url']])
+        chdir(tmp)
+        self.curr = 1
 
     def info(self):
         return (self.size, self.path, self.obj['tags'])

@@ -1,8 +1,8 @@
-from os import write
 from extractor.youtube import youtubeParser, youtubeDL
 from extractor.streetvoice import streetvoiceParser, streetvoiceDL
 from extractor.bandcamp import bandcampParser, bandcampDL
 from extractor.convert import converter
+from tools.playsound import playsound
 from tools.priority_queue import pqueue
 from tools.measure import measureTime
 from tools.stdscr import Stdscr
@@ -10,7 +10,6 @@ from tools.stdscr import Stdscr
 
 from concurrent.futures import ThreadPoolExecutor
 from argparse import ArgumentParser
-from playsound import playsound
 from queue import Queue
 from threading import Thread
 from time import sleep
