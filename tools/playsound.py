@@ -1,4 +1,4 @@
-def playsound(sound, block=True):
+def playsound(sound):
     from ctypes import c_buffer, windll
     from random import random
     from time import sleep
@@ -35,5 +35,5 @@ def playsound(sound, block=True):
     durationInMS = winCommand('status', alias, 'length')
     winCommand('play', alias, 'from 0 to', durationInMS.decode())
 
-    if block:
+    if True:
         sleep(float(durationInMS) / 1000.0)

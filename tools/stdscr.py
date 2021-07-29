@@ -6,7 +6,6 @@ class Stdscr:
         self.scr = curses.initscr()
         self.ps = None
         self.dl = None
-        self.cv = None
         self.slot = None
         curses.noecho()
         curses.cbreak()
@@ -15,15 +14,13 @@ class Stdscr:
         self.scr.erase()
         ps_str = f"Mux Parser: {self.pbar(*self.ps)}"
         dl_str = f"Downloader: {self.pbar(*self.dl)}"
-        cv_str = f" Converter: {self.pbar(*self.cv)}"
         self.scr.addstr(1, 0, ps_str)
         self.scr.addstr(2, 0, dl_str)
-        self.scr.addstr(3, 0, cv_str)
-        self.scr.addstr(4, 0, '-'*80)  # Divider
+        self.scr.addstr(3, 0, '-'*80)  # Divider
         _n = 1
         for v in self.slot:
             slot = f"slot {_n}: {self.fbar(*v)}"
-            self.scr.addstr(_n+4, 0, slot)
+            self.scr.addstr(_n+3, 0, slot)
             _n += 1
         self.scr.refresh()
 

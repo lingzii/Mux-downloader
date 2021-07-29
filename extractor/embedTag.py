@@ -1,11 +1,10 @@
-from io import BytesIO
-from json import load
-from PIL import Image
-from tempfile import gettempdir
 from .easyID3 import EasyID3
-from shutil import copy
+from tempfile import gettempdir
 from requests import get
-from os import remove
+from shutil import copy
+from io import BytesIO
+from PIL import Image
+from os import remove, path
 
 
 def RE(name):
@@ -25,16 +24,11 @@ def url2Image(url):
         return f.getvalue()
 
 
-def archiveFile(tags, srcFile):
-    with open('metadata.json', "r") as f:
-        dist = load(f)["save-dist"]
-    newName = RE(f"{tags['artist']} - {tags['title']}")
-    copy(srcFile, f"{dist}/{newName}.mp3")
-    remove(srcFile)
-
-
-def embedId3(tags):
+def embedId3(tags, config):
+    name = RE(f"{tags['artist']} - {tags['title']}")
     srcFile = f'{gettempdir()}\{tags["id"]}.mp3'
+    distfile = path.join(config.dist, f'{name}.mp3')
+
     tags['image'] = url2Image(tags['image'])
     audio = EasyID3(srcFile)
     audio.artist = tags['artist']
@@ -45,4 +39,6 @@ def embedId3(tags):
     audio.image = tags['image']
     audio.lyric = tags['lyric']
     audio.save()
-    archiveFile(tags, srcFile)
+
+    copy(srcFile, distfile)
+    remove(srcFile)
