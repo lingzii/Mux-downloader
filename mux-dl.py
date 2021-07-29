@@ -4,6 +4,7 @@ from extractor.bandcamp import bandcampParser
 from tools.sundry import importMeta, measureTime, moduleStatus
 from extractor.embedTag import embedId3
 from tools.playsound import playsound
+from tools.database import dedup
 from tools.stdscr import Stdscr
 
 from concurrent.futures import ThreadPoolExecutor
@@ -71,12 +72,15 @@ class DownloaderTrack(moduleTrack):
                     excuter.submit(self.task, *pack)
 
     def task(self, songDL, obj):
-        DL = songDL(obj)
-        ID = str(id(DL))
-        while DL.th.is_alive():
-            self.slotStatus[ID] = DL.status()
-        embedId3(obj, _config)
-        self.slotStatus.pop(ID)
+        song = dedup(obj)
+        if not (_config.debug and song.exist()):
+            DL = songDL(obj)
+            ID = str(id(DL))
+            while DL.th.is_alive():
+                self.slotStatus[ID] = DL.status()
+            embedId3(obj, _config)
+            song.insert()
+            self.slotStatus.pop(ID)
         self.curr += 1
 
     def slot(self):

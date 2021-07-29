@@ -19,7 +19,7 @@ class Stdscr:
         self.scr.addstr(3, 0, '-'*80)  # Divider
         _n = 1
         for v in self.slot:
-            slot = f"slot {_n}: {self.fbar(*v)}"
+            slot = f"slot {_n:02}: {self.fbar(*v)}"
             self.scr.addstr(_n+3, 0, slot)
             _n += 1
         self.scr.refresh()
