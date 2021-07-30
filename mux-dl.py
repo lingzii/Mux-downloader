@@ -72,8 +72,8 @@ class DownloaderTrack(moduleTrack):
                     excuter.submit(self.task, *pack)
 
     def task(self, songDL, obj):
-        song = dedup(obj)
-        if not (_config.debug and song.exist()):
+        song = dedup(obj, _config)
+        if not song.exist():
             DL = songDL(obj)
             ID = str(id(DL))
             while DL.th.is_alive():
